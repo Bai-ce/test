@@ -15,7 +15,7 @@ const router = createRouter({
       component: () => import('../views/notes/list.vue'),
     },
     {
-      path: '/note',
+      path: '/note/:id',
       name: 'Details',
       component: () => import('../views/notes/details.vue'),
     },
