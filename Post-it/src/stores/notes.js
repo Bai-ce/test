@@ -1,8 +1,10 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { useToast } from 'vue-toastification'
 export const useNoteStore = defineStore('localPostit', () => {
   // state()=>{
   // }
+  const toast = useToast()
   const store_postits = ref([])
   const store_postit = ref(null)
   const getPostits = () => {
@@ -12,13 +14,13 @@ export const useNoteStore = defineStore('localPostit', () => {
         store_postits.value = data.notes
         localStorage.setItem('localPostit', JSON.stringify(data.notes))
       })
-      .catch((error) => console.error('Erreur GET ALL :', error))
+      .catch((error) => toast.error('error !'))
   }
   const getPostit = (id) => {
     fetch(`https://post-it.epi-bluelock.bj/notes/${id}`)
       .then((response) => response.json())
       .then((data) => (store_postit.value = data))
-      .catch((error) => console.error('Erreur GET ONE :', error))
+      .catch((error) => toast.error('error !'))
   }
 
   const createPostit = (note) => {
@@ -30,9 +32,10 @@ export const useNoteStore = defineStore('localPostit', () => {
       .then((response) => response.json())
       .then((data) => {
         store_postits.value.push(note)
+        toast.success('create successfully')
         getPostits()
       })
-      .catch((error) => console.error('Erreur CREATE :', error))
+      .catch((error) => toast.error('error !'))
   }
 
   const updatePostit = (id, note) => {
@@ -47,10 +50,11 @@ export const useNoteStore = defineStore('localPostit', () => {
         if (index !== -1) {
           store_postits.value[index] = data.note
         }
+        toast.success('update successfully')
         getPostits()
       })
 
-      .catch((error) => console.error('Erreur UPDATE :', error))
+      .catch((error) => toast.error('error !'))
   }
 
   const deletePostit = (id) => {
@@ -59,9 +63,10 @@ export const useNoteStore = defineStore('localPostit', () => {
     })
       .then(() => {
         store_postits.value = store_postits.value.filter((n) => n._id !== id)
+        toast.success('delete successfully')
         getPostits()
       })
-      .catch((error) => console.error('Erreur DELETE :', error))
+      .catch((error) => toast.error('error !'))
   }
 
   return {

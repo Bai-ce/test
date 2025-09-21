@@ -208,7 +208,6 @@ const showModal = () => {
 }
 
 const postStore = useNoteStore()
-const postits = postStore.store_postits
 
 const form = ref({
   title: '',
@@ -242,7 +241,7 @@ onMounted(() => {
   // postits.value = getpostits
 })
 watch(
-  postits,
+  postStore.store_postits,
   (newValue) => {
     localStorage.setItem('localPostit', JSON.stringify(newValue))
   },
