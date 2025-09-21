@@ -1,18 +1,32 @@
 <template>
   <article
-    class="w-4xl py-20 mt-20 m-auto flex justify-center bg-white transition hover:shadow-xl dark:bg-gray-900 dark:shadow-gray-800/25"
+    v-if="onePostit"
+    class="w-4xl p-20 mt-20 m-auto flex justify-center bg-white transition hover:shadow-xl dark:bg-gray-900 dark:shadow-gray-800/25"
   >
     <div class="rotate-180 p-2 mr-5 [writing-mode:_vertical-lr]">
       <time
         datetime="2022-10-10"
         class="flex items-center justify-between gap-4 text-md font-bold text-gray-900 uppercase dark:text-white"
       >
-        <span>2022</span>
+        <span
+          >{{ new Date(onePostit.createdAt).toLocaleDateString('en-US', { month: 'long' }) }}
+          <span class="mt-2">{{ new Date(onePostit.createdAt).getDate() }}</span></span
+        >
         <span class="w-px flex-1 bg-gray-900/10 dark:bg-white/10"></span>
-        <span>Oct 10</span>
+        <span>{{ new Date(onePostit.createdAt).getFullYear() }}</span>
       </time>
     </div>
     <div>
+      <div class="rotate-180 p-2 mr-5 [writing-mode:_vertical-lr]">
+        <time
+          :datetime="onePostit.createdAt"
+          class="flex items-center justify-between gap-4 text-md font-bold text-gray-900 uppercase dark:text-white"
+        >
+          <span></span>
+          <span class="w-px flex-1 bg-gray-900/10 dark:bg-white/10"></span>
+          <span></span>
+        </time>
+      </div>
       <div class="hidden sm:block sm:basis-56">
         <img
           alt=""
@@ -27,12 +41,12 @@
         >
           <a href="#">
             <h3 class="text-4xl font-bold text-gray-900 uppercase dark:text-white">
-              {{ postit.title }}
+              {{ onePostit.title }}
             </h3>
           </a>
 
           <p class="mt-2 line-clamp-3 text-lg/relaxed text-gray-700 dark:text-gray-200">
-            {{ postit.content }}
+            {{ onePostit.content[0] }}
           </p>
         </div>
 
@@ -50,15 +64,22 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
+import { useNoteStore } from '@/stores/notes'
 const route = useRoute()
-const postit = ref([])
-onMounted(() => {
-  const id = route.params.id
-  const postits = JSON.parse(localStorage.getItem('localPostit'))
-  postit.value = postits.find((postit_find) => postit_find.id == id)
 
-  console.log(postit.title)
+const postStore = useNoteStore()
+// const id = route.params.id
+// console.log(id)
+// const postit = ref([])
+const onePostit = computed(() => postStore.store_postit)
+onMounted(() => {
+  postStore.getPostit(route.params.id)
+
+  // const postits = JSON.parse(localStorage.getItem('localPostit'))
+  // postit.value = postits.find((postit_find) => postit_find.id == id)
+
+  // console.log(postit.title)
 })
 </script>

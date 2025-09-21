@@ -1,11 +1,76 @@
 import { defineStore } from 'pinia'
-
+import { ref } from 'vue'
 export const useNoteStore = defineStore('localPostit', () => {
   // state()=>{
   // }
-  const postits = ref(null)
+  const store_postits = ref([])
+  const store_postit = ref(null)
+  const getPostits = () => {
+    fetch('https://post-it.epi-bluelock.bj/notes')
+      .then((response) => response.json())
+      .then((data) => {
+        store_postits.value = data.notes
+        localStorage.setItem('localPostit', JSON.stringify(data.notes))
+      })
+      .catch((error) => console.error('Erreur GET ALL :', error))
+  }
+  const getPostit = (id) => {
+    fetch(`https://post-it.epi-bluelock.bj/notes/${id}`)
+      .then((response) => response.json())
+      .then((data) => (store_postit.value = data))
+      .catch((error) => console.error('Erreur GET ONE :', error))
+  }
 
-  postits.value = fetch('https://post-it.epi-bluelock.bj/notes')
-    .then((r) => r.json())
-    .then((v) => (postits.value = v.notes))
+  const createPostit = (note) => {
+    fetch('https://post-it.epi-bluelock.bj/notes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(note),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        store_postits.value.push(note)
+        getPostits()
+      })
+      .catch((error) => console.error('Erreur CREATE :', error))
+  }
+
+  const updatePostit = (id, note) => {
+    fetch(`https://post-it.epi-bluelock.bj/notes/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(note),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const index = store_postits.value.findIndex((n) => n.id === id)
+        if (index !== -1) {
+          store_postits.value[index] = data.note
+        }
+        getPostits()
+      })
+
+      .catch((error) => console.error('Erreur UPDATE :', error))
+  }
+
+  const deletePostit = (id) => {
+    fetch(`https://post-it.epi-bluelock.bj/notes/${id}`, {
+      method: 'DELETE',
+    })
+      .then(() => {
+        store_postits.value = store_postits.value.filter((n) => n._id !== id)
+        getPostits()
+      })
+      .catch((error) => console.error('Erreur DELETE :', error))
+  }
+
+  return {
+    store_postits,
+    store_postit,
+    getPostits,
+    getPostit,
+    createPostit,
+    updatePostit,
+    deletePostit,
+  }
 })

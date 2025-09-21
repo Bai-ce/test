@@ -23,8 +23,8 @@
 
   <div class="grid lg:grid-cols-2 xl:grid-cols-3 w-full gap-8">
     <div
-      v-for="postit in postits"
-      :key="postit.id"
+      v-for="postit in postStore.store_postits"
+      :key="postit._id"
       class="group outline-1 transform hover:scale-95 -outline-offset-1 outline-white/10 text-xl bg-[#172130] border p-12 hover:border-blue-500 rounded-lg transition-all ease-in-out 5s shadow-lg hover:shadow-blue-400/50"
     >
       <div class="flex items-center justify-between">
@@ -44,7 +44,7 @@
           </div>
         </div>
 
-        <RouterLink :to="`/note/${postit.id}`" class="text-blue-500 hover:text-blue-400">
+        <RouterLink :to="`/note/${postit._id}`" class="text-blue-500 hover:text-blue-400">
           view more <i class="fa-solid fa-arrow-right"></i>
         </RouterLink>
       </div>
@@ -60,20 +60,21 @@
           <button
             class="inline-flex items-center rounded-full px-3 gap-x-1.5 py-1 text-md font-medium forced-colors:outline hover:text-blue-400 hover:bg-blue-500/20 bg-white/20 text-white/90 transform hover:scale-105"
             command="show-modal"
-            :commandfor="postit.id"
+            commandfor="dialog"
+            @click="editPostit(postit)"
           >
             <i class="fa-solid fa-pen-to-square"></i>update
           </button>
           <button
             command="show-modal"
-            commandfor="dialogdelete"
+            :commandfor="postit._id"
             class="inline-flex transform hover:scale-105 items-center gap-x-1.5 rounded-full px-3 py-1 text-md font-medium forced-colors:outline bg-white/20 text-white/90 hover:text-red-400 hover:bg-red-500/20"
           >
             <i class="fa-solid fa-trash"></i>delete
           </button>
         </div>
       </div>
-      <Confirm_delete :post_id="postit.id" @delete="deletePostit(postit.id)" />
+      <Confirm_delete :post_id="postit._id" @delete="postStore.deletePostit(postit._id)" />
     </div>
   </div>
 
@@ -140,9 +141,7 @@
                     <form @submit.prevent="handleSubmit" class="mx-auto mt-16 max-w-xl sm:mt-20">
                       <div class="grid grid-cols-1 gap-x-8 gap-y-6">
                         <div>
-                          <label for="first-name" class="block text-sm/6 font-semibold text-white"
-                            >Title</label
-                          >
+                          <label class="block text-sm/6 font-semibold text-white">Title</label>
                           <div class="mt-2.5">
                             <input
                               v-model="form.title"
@@ -154,9 +153,7 @@
                         </div>
 
                         <div class="sm:col-span-2">
-                          <label for="message" class="block text-sm/6 font-semibold text-white"
-                            >Content</label
-                          >
+                          <label class="block text-sm/6 font-semibold text-white">Content</label>
                           <div class="mt-2.5">
                             <textarea
                               v-model="form.content"
@@ -203,96 +200,108 @@ import { onMounted, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useNoteStore } from '@/stores/notes'
 import Confirm_delete from '@/components/confirm_delete.vue'
+import { useRoute } from 'vue-router'
+const route = useRoute()
 const isShowing = ref(false)
 const showModal = () => {
   isShowing.value = true
 }
-const postits = ref([])
-// onMounted(() => {
-//   fetch('https://post-it.epi-bluelock.bj/notes')
-//     .then((r) => r.json())
-//     .then((v) => (postits.value = v.notes))
-// })
+
+const postStore = useNoteStore()
+const postits = postStore.store_postits
 
 const form = ref({
   title: '',
   content: '',
 })
 
-onMounted(() => {
-  const saved = localStorage.getItem('localPostit')
-  let getpostits = []
-
-  if (saved) {
-    try {
-      getpostits = JSON.parse(saved)
-    } catch (e) {
-      console.error('Erreur JSON réinitialisation :', e)
-      getpostits = []
-      localStorage.setItem('localPostit', JSON.stringify([]))
-    }
-  } else {
-    localStorage.setItem('localPostit', JSON.stringify([]))
+const editPostit = (postit) => {
+  form.value = {
+    _id: postit._id,
+    title: postit.title,
+    content: postit.content[0],
   }
-  postits.value = getpostits
+}
+
+onMounted(() => {
+  postStore.getPostits()
+  // const saved = localStorage.getItem('localPostit')
+  // let getpostits = []
+
+  // if (saved) {
+  //   try {
+  //     getpostits = JSON.parse(saved)
+  //   } catch (e) {
+  //     console.error('Erreur JSON réinitialisation :', e)
+  //     getpostits = []
+  //     localStorage.setItem('localPostit', JSON.stringify([]))
+  //   }
+  // } else {
+  //   localStorage.setItem('localPostit', JSON.stringify([]))
+  // }
+  // postits.value = getpostits
 })
 watch(
   postits,
   (newValue) => {
     localStorage.setItem('localPostit', JSON.stringify(newValue))
-    console.log(postits)
   },
   { deep: true },
 )
-
-// watch(
-//   pinia.state,
-//   (state) => {
-//     // persist the whole state to the local storage whenever it changes
-//     localStorage.setItem('piniaState', JSON.stringify(state))
-//   },
-//   { deep: true },
-// )
 
 const handleSubmit = () => {
   if (!form.value.title || !form.value.content) {
     alert('Veuillez remplir tous les champs')
     return
   }
-  postits.value.push({
-    id: generateUniqueId(),
-    title: form.value.title,
-    content: form.value.content,
-  })
+  console.log(form.value)
+  if (!form.value._id) {
+    // postits.value.push({
+    //   id: generateUniqueId(),
+    //   title: form.value.title,
+    //   content: [form.value.content],
 
-  form.value.title = ''
-  form.value.content = ''
-  // toast.success('Transaction added.')
-}
+    // })
+    const note = {
+      title: form.value.title,
+      content: [form.value.content],
+    }
 
-const deletePostit = (id) => {
-  postits.value = postits.value.filter((postit) => postit.id !== id)
-  // toast.success('Transaction deleted.')
+    postStore.createPostit(note)
+  } else {
+    updatePostit(form.value._id)
+  }
+
+  form.value = { title: '', content: '', _id: null }
 }
 
 const updatePostit = (id) => {
-  const oldPostit = postits.value.find((postit) => postit.id == id)
-  console.log(oldPostit)
-
-  oldPostit = {
-    id: id,
+  const note = {
     title: form.value.title,
-    content: form.value.content,
+    content: [form.value.content],
   }
-  console.log(oldPostit)
-  // toast.success('Transaction deleted.')
-}
-const deleteAllPostit = () => {
-  postits.value = []
-  // toast.success('Transaction deleted.')
+  console.log('vdvd')
+  postStore.updatePostit(id, note)
 }
 
-const generateUniqueId = () => {
-  return Math.floor(Math.random() * 1000000)
-}
+// const index = postits.value.findIndex((postit) => postit.id === id)
+// if (index !== -1) {
+//   postits.value[index] = {
+//     ...postits.value[index],
+//     title: form.value.title,
+//     content: form.value.content,
+//   }
+// }
+
+// const deletePostit = (id) => {
+//   postits.value = postits.value.filter((postit) => postit.id !== id)
+// }
+
+// const deleteAllPostit = () => {
+//   postits.value = []
+// }
+
+// const generateUniqueId = () => {
+//   return Math.floor(Math.random() * 1000000)
+// }
 </script>
