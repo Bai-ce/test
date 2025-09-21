@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-[2000px] bg-gradient-to-r">
+  <div class="max-w-[2000px]">
     <header class="sm:p-10 shadow-sm">
       <h3 class="text-lg md:text-4xl font-semibold tracking-tight text-white">
         <i class="fa-regular fa-rectangle-list sm:mr-5"></i>Mes Post-Its
@@ -10,7 +10,7 @@
       <button
         command="show-modal"
         commandfor="dialog"
-        class="rounded-md bg-white/50 px-10 py-3 text-sm font-semibold text-white inset-ring inset-ring-white/5 hover:bg-gray-950"
+        class="rounded-md bg-gray-900 px-10 py-3 text-sm font-semibold text-white inset-ring inset-ring-white/5 hover:bg-gray-950"
       >
         <i class="fa-solid fa-plus"></i>Add a post-it
       </button>
@@ -26,7 +26,7 @@
       <div
         v-for="postit in postStore.store_postits"
         :key="postit._id"
-        class="w-full group outline-1 transform hover:scale-95 -outline-offset-1 outline-white/10 text-xl bg-white/10 backdrop-blur-md border-white/20 rounded-xl shadow-lg p-5 hover:scale-[1.02] transition-all border sm:p-12 hover:border-blue-500 ease-in-out 5s hover:shadow-blue-400/50"
+        class="w-full group outline-1 transform hover:scale-95 -outline-offset-1 outline-white/10 text-xl bg-[#172130] border sm:p-12 hover:border-blue-500 rounded-lg transition-all ease-in-out 5s shadow-lg hover:shadow-blue-400/50"
       >
         <div class="sm:flex items-center justify-between">
           <div class="flex space-x-5">
@@ -52,7 +52,6 @@
             view more <i class="fa-solid fa-arrow-right"></i>
           </RouterLink>
         </div>
-
         <div class="opacity-0 group-hover:opacity-100">
           <div
             class="mt-5 sm:mt-0 text-[16px] px-5 border-gray-700 space-x-3 text-gray-900 flex text-white-600 transition-all 5s"
