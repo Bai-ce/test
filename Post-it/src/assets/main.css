@@ -1,9 +1,10 @@
 @import './base.css';
 
 #app {
-  max-width: 2000px;
   margin: 0 auto;
-  padding: 5rem;
+  padding-left: 10%;
+  padding-right: 10%;
+  padding-top: 5%;
   font-weight: normal;
 }
 body {

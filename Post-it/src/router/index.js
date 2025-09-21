@@ -11,13 +11,13 @@ const router = createRouter({
     // },
     {
       path: '/',
-      name: 'List',
-      component: () => import('../views/notes/list.vue'),
+      name: 'notes',
+      component: () => import('../views/notes/notes.vue'),
     },
     {
       path: '/note/:id',
-      name: 'Details',
-      component: () => import('../components/details.vue'),
+      name: 'note',
+      component: () => import('../views/notes/note.vue'),
     },
 
     // {

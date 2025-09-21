@@ -1,7 +1,7 @@
 <template>
-  <article
+  <div
     v-if="onePostit"
-    class="w-4xl p-20 mt-20 m-auto flex justify-center bg-white transition hover:shadow-xl dark:bg-gray-900 dark:shadow-gray-800/25"
+    class="xl:w-1/2 p-20 mt-20 m-auto flex justify-center bg-white transition hover:shadow-xl dark:bg-gray-900 dark:shadow-gray-800/25"
   >
     <div class="rotate-180 p-2 mr-5 [writing-mode:_vertical-lr]">
       <time
@@ -16,18 +16,8 @@
         <span>{{ new Date(onePostit.createdAt).getFullYear() }}</span>
       </time>
     </div>
-    <div>
-      <div class="rotate-180 p-2 mr-5 [writing-mode:_vertical-lr]">
-        <time
-          :datetime="onePostit.createdAt"
-          class="flex items-center justify-between gap-4 text-md font-bold text-gray-900 uppercase dark:text-white"
-        >
-          <span></span>
-          <span class="w-px flex-1 bg-gray-900/10 dark:bg-white/10"></span>
-          <span></span>
-        </time>
-      </div>
-      <div class="hidden sm:block sm:basis-56">
+    <div class="!w-full">
+      <div class="hidden sm:block">
         <img
           alt=""
           src="https://images.unsplash.com/photo-1609557927087-f9cf8e88de18?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80"
@@ -40,12 +30,16 @@
           class="border-s border-gray-900/10 p-4 sm:!border-l-transparent sm:p-6 dark:border-white/10"
         >
           <a href="#">
-            <h3 class="text-4xl font-bold text-gray-900 uppercase dark:text-white">
+            <h3
+              class="text-4xl font-bold text-gray-900 uppercase dark:text-white break-words whitespace-pre-line"
+            >
               {{ onePostit.title }}
             </h3>
           </a>
 
-          <p class="mt-2 line-clamp-3 text-lg/relaxed text-gray-700 dark:text-gray-200">
+          <p
+            class="mt-2 text-lg/relaxed text-wrap text-gray-700 dark:text-gray-200 break-words whitespace-pre-line"
+          >
             {{ onePostit.content[0] }}
           </p>
         </div>
@@ -60,7 +54,8 @@
         </div>
       </div>
     </div>
-  </article>
+  </div>
+  <div v-else class="text-3xl text-white text-center">No data found</div>
 </template>
 
 <script setup>

@@ -1,6 +1,8 @@
 import './assets/main.css'
 import Toast from 'vue-toastification'
 import 'vue-toastification/dist/index.css'
+import VueAwesomePaginate from 'vue-awesome-paginate'
+import 'vue-awesome-paginate/dist/style.css'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
@@ -13,4 +15,4 @@ app.use(createPinia())
 app.use(router)
 app.use(Toast)
 
-app.mount('#app')
+app.use(VueAwesomePaginate).mount('#app')
