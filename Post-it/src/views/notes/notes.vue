@@ -1,7 +1,7 @@
 <template>
   <div class="max-w-[2000px]">
     <header class="sm:p-10 shadow-sm">
-      <h3 class="text-lg md:text-4xl font-semibold tracking-tight text-white">
+      <h3 class="text-lg md:text-6xl font-semibold tracking-tight text-white">
         <i class="fa-regular fa-rectangle-list sm:mr-5"></i>Mes Post-Its
       </h3>
       <p class="mt-2 text-lg/8 text-gray-400">Organisez vos idées, simplement et efficacement</p>
@@ -10,13 +10,13 @@
       <button
         command="show-modal"
         commandfor="dialog"
-        class="rounded-md bg-gray-900 px-10 py-3 text-sm font-semibold text-white inset-ring inset-ring-white/5 hover:bg-gray-950"
+        class="md:text-xl text-sm rounded-md bg-gray-900 px-10 py-3 font-semibold text-white inset-ring inset-ring-white/5 hover:bg-gray-950"
       >
         <i class="fa-solid fa-plus"></i>Add a post-it
       </button>
       <button
         @click="deleteAllPostit(postits)"
-        class="bg-red-100 text-red-900 px-10 py-3 rounded-md text-sm font-semibold"
+        class="md:text-xl bg-red-100 text-red-900 px-10 py-3 rounded-md text-sm font-semibold"
       >
         <i class="fa-solid fa-trash-can-arrow-up"></i> Delete
       </button>
@@ -26,7 +26,7 @@
       <div
         v-for="postit in postStore.store_postits"
         :key="postit._id"
-        class="w-full group outline-1 transform hover:scale-95 -outline-offset-1 outline-white/10 text-xl bg-[#172130] border sm:p-12 hover:border-blue-500 rounded-lg transition-all ease-in-out 5s shadow-lg hover:shadow-blue-400/50"
+        class="w-full border-dashed border-white/0 group outline-1 transform hover:scale-95 -outline-offset-1 outline-white/10 text-xl bg-white/10 border sm:p-12 hover:border-blue-500 rounded-lg transition-all ease-in-out 5s shadow-lg hover:shadow-blue-400/50"
       >
         <div class="sm:flex items-center justify-between">
           <div class="flex space-x-5">
@@ -36,10 +36,10 @@
               class="rounded-md px-1.5 py-2 text-md font-medium forced-colors:outline text-blue-400"
             ></div>
             <div class="mb-5">
-              <h3 class="font-black text-lg md:text-2xl text-white/90 text-wrap">
+              <h3 class="font-black text-lg lg:text-3xl text-white/90 text-wrap">
                 {{ postit.title.slice(0, 10) }}
               </h3>
-              <p class="text-gray-400 mt-2.5 overflow-ellipsis overflow-hidden">
+              <p class="text-lg lg:text-xl text-gray-400 mt-2.5 overflow-ellipsis overflow-hidden">
                 {{ postit.content[0].slice(0, 20) }}
               </p>
             </div>
@@ -47,7 +47,7 @@
 
           <RouterLink
             :to="`/note/${postit._id}`"
-            class="text-xs md:text-xl text-blue-500 ml-5 sm:ml-0 mb-5 sm:mb-0 hover:text-blue-400"
+            class="text-md md:text-xl text-blue-500 ml-5 sm:ml-0 mb-5 sm:mb-0 hover:text-blue-400"
           >
             view more <i class="fa-solid fa-arrow-right"></i>
           </RouterLink>
@@ -82,7 +82,7 @@
       </div>
     </div>
 
-    <div>
+    <div class="!w-full">
       <dialog
         id="dialog"
         aria-labelledby="dialog-title"
